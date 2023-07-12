@@ -6,7 +6,8 @@ contract MyToken {
   string public name;
   string public symbol;
   address public owner;
-
+  
+  // mapping of address to balances
   mapping(address => uint256) public balances;
 
   // events
@@ -20,14 +21,17 @@ contract MyToken {
     name = _name;
     symbol = _symbol;
     owner = _owner;
-    
-    emit Transfer(address(0), msg.sender, totalSupply);
+  }
+
+  function setOwner(address newOwner) public {
+    require(msg.sender == owner, "Only the owner can set the owner");
+    owner = newOwner;
   }
 
   function mint(address to, uint256 amount) public returns (bool) {
     // requirement
-    require(msg.sender == owner, "Only the owner can mint tokens");
-    require(amount <= totalSupply - balances[to], "No Enough Tokens");
+    require(owner == msg.sender, "Only the owner can mint tokens");
+    
     balances[to] += amount;
     totalSupply += amount;
     
